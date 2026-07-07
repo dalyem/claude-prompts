@@ -35,10 +35,26 @@ Every prompt here encodes the same engineer: decades of experience, close to ret
 | [debug.md](prompts/debug.md) | Root-cause analysis from symptoms, logs, and code |
 | [refactor.md](prompts/refactor.md) | Behavior-preserving cleanup toward a named destination |
 | [write-tests.md](prompts/write-tests.md) | Tests that catch regressions instead of restating the code |
+| [verify-change.md](prompts/verify-change.md) | Turning "done" into evidence: exercise the real flow, report per-claim verdicts |
+| [handoff.md](prompts/handoff.md) | Reporting work honestly: outcome first, verified/untested/not-done kept separate |
+| [commit-and-pr.md](prompts/commit-and-pr.md) | Intent-sized bisectable commits and reviewer-first PR descriptions |
 | [explain-code.md](prompts/explain-code.md) | Getting oriented in unfamiliar code, design creaks included |
 | [improve-prompt.md](prompts/improve-prompt.md) | Meta: diagnosing and rewriting any rough prompt |
 
-For work bigger than a routine change, chain them: `design.md` → paste the design into `implement.md` → `write-tests.md` → `code-review.md` on the result.
+For work bigger than a routine change, chain them: `design.md` → paste the design into `implement.md` → `write-tests.md` → `verify-change.md` → `code-review.md` → `commit-and-pr.md`, with `handoff.md` to wrap up the session.
+
+## Skills (for agent harnesses)
+
+The `skills/` directory carries the same content in the cross-agent SKILL.md format (YAML frontmatter with `name` + `description`, instructions as the body) used by Claude Code, Codex CLI, Cursor, and OpenCode. The skill bodies are adapted for agents with tools: instead of pasting inputs into placeholder tags, each skill tells the agent what to gather itself — run `git diff`, reproduce the failure first, search for the call sites.
+
+Two ways to install:
+
+- Copy any `skills/<name>/` directory into an agent's skills dir: `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, or `~/.config/opencode/skills/`.
+- With [mcp-manage](https://github.com/dalyem/mcp-manage) running, `node scripts/register-skills.mjs` registers or updates all of them through its API (default `http://127.0.0.1:8722`, override with `MCP_MANAGE_URL`), and mcp-manage syncs them to every agent on the machine. The script is idempotent and preserves the enabled/targets settings you've made in the UI.
+
+Mindset and process skills — `staff-engineer-mindset`, `context-discipline`, `planning-discipline` — load on-demand like the rest; if you want the mindset on *every* task instead, paste `prompts/staff-engineer.md`'s body into mcp-manage's global Instructions panel.
+
+Prompts vs skills: `prompts/` are self-contained copy-paste artifacts for any chat UI; `skills/` assume an agent with tools. Same judgment, two delivery vehicles — if you edit one, mirror the change in the other.
 
 ## Portability notes
 
